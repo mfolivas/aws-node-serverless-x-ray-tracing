@@ -1,0 +1,26 @@
+{
+  "name": "aws-node-serverless-x-ray-tracing",
+  "version": "1.0.0",
+  "description": "Create tracing of spams using the serverlress-plugin-tracing",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfolivas/aws-node-serverless-x-ray-tracing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mfolivas/aws-node-serverless-x-ray-tracing/issues"
+  },
+  "homepage": "https://github.com/mfolivas/aws-node-serverless-x-ray-tracing#readme",
+  "dependencies": {
+    "aws-xray-sdk": "^3.2.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.846.0",
+    "serverless-plugin-tracing": "^2.0.0"
+  }
+}
