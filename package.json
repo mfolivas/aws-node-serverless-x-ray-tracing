@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/mfolivas/aws-node-serverless-x-ray-tracing#readme",
   "dependencies": {
-    "aws-xray-sdk": "^3.2.0"
+    "aws-xray-sdk": "^3.2.0",
+    "serverless-pseudo-parameters": "^2.5.0"
   },
   "devDependencies": {
     "aws-sdk": "^2.846.0",

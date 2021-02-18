@@ -2,10 +2,16 @@ service: aws-node-serverless-x-ray-tracing
 
 frameworkVersion: '2'
 
+plugins:
+  - serverless-plugin-tracing
+  - serverless-pseudo-parameters
+
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
   lambdaHashingVersion: 20201221
+
   tracing: true # enable tracing
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
@@ -14,9 +20,56 @@ provider:
         - "xray:PutTelemetryRecords"
       Resource:
         - "*"
+    - Effect: 'Allow'
+      Action:
+        - "sns:Publish"
+      Resource:
+        - arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:${self:custom.notes_topic_name}
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:ListStream
+      Resource:
+        - Fn::GetAtt: [notesDynamodbTable, Arn]
+        - Fn::Join:
+            - /
+            -
+              - Fn::GetAtt: [notesDynamodbTable, Arn]
+              - index/*
+  environment:
+    notes_table_name: ${self:custom.notes_table_name}
+
+custom:
+  notes: notes-${self:provider.stage}
+  notes_table_name: ${self:custom.notes}
+  notes_topic_name: ${self:custom.notes}
 
 functions:
   hello:
     handler: handler.hello
-  again:
-    handler: handler.again
+
+
+resources:
+  Resources:
+    notesDynamodbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST 
+        TableName: ${self:custom.notes_table_name}
+        Tags:
+          - Key: microservice
+            Value: xray
+
+    notesSnsTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: notes sns
+        TopicName: ${self:custom.notes_topic_name}
