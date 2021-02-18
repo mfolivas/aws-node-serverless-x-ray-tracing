@@ -40,7 +40,9 @@ provider:
               - index/*
   environment:
     notes_table_name: ${self:custom.notes_table_name}
-    notes_topic_arn: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:${self:custom.notes_topic_name}
+    event_topic_arn:
+      Ref: notesSnsTopic
+
 custom:
   notes: notes-${self:provider.stage}
   notes_table_name: ${self:custom.notes}

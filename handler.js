@@ -1,20 +1,24 @@
 'use strict';
 const AWS = require('aws-sdk');
 const awsXRay = require('aws-xray-sdk');
-const awsSdk = awsXRay.captureAWS(AWS);
+const awsSdk = awsXRay.captureAWS(require('aws-sdk'));
 
 const DynamoDBService = new AWS.DynamoDB.DocumentClient();
 const SnsService = new AWS.SNS()
 module.exports.hello = async (event) => {
-  await DynamoDBService.get({
+  const dbResponse = await DynamoDBService.get({
     TableName: process.env.notes_table_name,
     Key: { id: 'some-random-id'}
   }).promise() 
+  
+  console.log('db response', dbResponse)
 
-  await SnsService.publish({
+  const snsResponse = await SnsService.publish({
     Message: 'test',
-    TopicArn: process.env.notes_topic_arn
-  })
+    TopicArn: process.env.event_topic_arn
+  }).promise()
+
+  console.log('sns response', snsResponse)
 
   return {
     statusCode: 200,
