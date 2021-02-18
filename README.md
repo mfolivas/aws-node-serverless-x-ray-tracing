@@ -14,3 +14,9 @@ may not work due to outdated Javascript SDK that
 does not support `TracingConfig`.
 
 `npm install --save-dev serverless-plugin-tracing`
+
+To deploy do the following:
+1 - run `sls deploy`
+2 - run `./execute-hello-multiple-times.sh`
+
+The application run the `sls invoke -f hello` every 5 seconds to show the traces
